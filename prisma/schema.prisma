@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+//todo: MongoDB Atlas tuanlehuu72@gmail.com
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+//todo: document chi tiết để tạo model https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/mongodb/creating-the-prisma-schema-typescript-mongodb
+
+//todo: Tạo User khi đăng nhập bằng register
+model User {
+  //todo: id trong mongodb là thuộc tính đặc biệt được gọi là ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  image       String?
+  email       String?  @unique //* email is optional tại vì có thể sử dụng nhiều kiểu đăng nhập khác email
+  emailVerify DateTime //* Email Confirm
+  hash        String? //* optinal bởi vì có thể sử dụng kiểu đăng nhập khác
+
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  favoriteIdMovie String[] @db.ObjectId //* là danh sách những bộ phim yêu thích của user, bởi vì là id nên khai báo @db.ObjectId
+
+  sessions Session[]
+  Accounts Account[]
+  Rating   Rating[]
+}
+
+//todo: Tạo Account để đăng nhập bằng 1 tài khoản liên kết, 1 User có thể có nhiều Account liên kết
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  type              String //* OAuth là loại log in sử dụng GithubProvider, GoogleProvider của next-auth
+  provider          String //* provider sẽ nhận được từ hàm signIn('google',{callbackUrl:...}) của next-auth
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String? //* Bearer
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  //todo: Tạo mối quan hệ(relation) giữa Account và User.id
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) //* userId = user.id, onDelete: Cascade để xoá hết Account mới được xoá đến User
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  session_token String   @unique
+  expires       DateTime
+  //todo: relation to User
+  userId        String?  @db.ObjectId
+  User          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  //todo: Token từ backend trả về để verify sau khi login user 
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String //* identifier: định danh
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Movie {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  description  String
+  videoUrl     String
+  thumbnailUrl String //* thumbnail: hình nhỏ
+  genre        String //* genre: thể loại
+  duration     String //* duration: khoảng thời gian
+
+  //todo: Mảng chứa các model rating
+  Rating Rating[]
+}
+
+// todo: Khi tạo 1 rate có comment và stars từ client và post lên Db, model rate sẽ tạo id,commnet,stars và 1 mảng các user(model rate sẽ liên kết với user theo quan hệ one-many, mảng các user đó sẽ chứa các userId)
+//todo: Model Rate relation with movie by rating[] (1 movie có nhiều model rate), Trong model movie thì có 1 mảng ratring chứa các rateId 
+//todo: => Khi render RatingMovie sẽ truy suất vào mảng rating[] của movie chứa các rateId, từ rateId sẽ truy suất vào model rate tìm tới UserRating[] chứa các user (thông tin của user và message, rateStars của user đó)
+
+model Rating {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  stars Int
+
+  //todo: Tạo relation với user, để biết được user nào đã rating movie đó (bằng cách truy suất id của rating sẽ ra id của user)
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  movieId String @db.ObjectId
+  movie   Movie  @relation(fields: [movieId], references: [id], onDelete: Cascade)
+}
