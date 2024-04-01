@@ -1,6 +1,7 @@
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { NextPageContext } from "next";
 import { getSession } from "next-auth/react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 
 //todo: Tạo protect client cho profiles tương tự như home page
@@ -42,10 +43,14 @@ const Profiles = () => {
             }}
           >
             {/* //* class group để các element trong group đó được đồng bộ với nhau, ví dụ như khi hover */}
-            <img
+            <Image
               src="/images/default-blue.png"
               alt="profile-blue"
+              sizes="100vw"
+              width={0}
+              height={0}
               className="
+              w-[100px]
               rounded-md 
               border-2 border-transparent
               group-hover:cursor-pointer group-hover:border-white duration-300"

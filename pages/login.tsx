@@ -8,6 +8,7 @@ import { FaGithub } from "react-icons/fa";
 import loginValidate from "@/validation/loginValidate";
 import registerValidate from "@/validation/registerValidate";
 import InputForm from "@/components/InputFormComponent/InputForm";
+import Image from "next/image";
 
 const Login = () => {
   /* //todo: VALIDATION */
@@ -153,7 +154,13 @@ const Login = () => {
         {/* //todo: element làm mờ background */}
         <nav className="w-full px-10 py-5 ">
           {/* //todo: logo element (height:44px */}
-          <img src="/images/logo.png" alt="logo" className="h-11" />
+          <Image
+            src="/images/logo.png"
+            sizes="100vw"
+            width={0}
+            height={0}
+            alt="logo"
+          />
         </nav>
         <div className="flex justify-center">
           {/* //todo: form login */}

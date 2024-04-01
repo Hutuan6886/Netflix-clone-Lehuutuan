@@ -2,6 +2,7 @@ import React from "react";
 import { FiLogOut } from "react-icons/fi";
 import { signOut } from "next-auth/react";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import Image from "next/image";
 
 interface AccountMenuProps {
   visible?: boolean;
@@ -22,8 +23,9 @@ const AccountMenu: React.FC<AccountMenuProps> = ({ visible }) => {
                     border-2 border-gray-600"
     >
       <div className="text-white flex flex-row items-center gap-2 pt-3 pl-3">
-        <img
+        <Image
           src="/images/default-blue.png"
+          sizes="100vw" width={0} height={0}
           alt="default-blue"
           className="w-5 rounded-md"
         />

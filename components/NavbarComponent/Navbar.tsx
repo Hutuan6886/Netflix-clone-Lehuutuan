@@ -6,6 +6,7 @@ import { IoChevronDown } from "react-icons/io5";
 import { useCallback, useEffect, useState } from "react";
 import MobileMenu from "../MobileMenuComponent/MobileMenu";
 import AccountMenu from "../AccountMenuComponent/AccountMenu";
+import Image from "next/image";
 
 //todo: Cách tạo background Navbar từ transparent đổi sang đen trong suốt sau khi scrolldown( Tạo giá trị TOP_OFFSET -> Tạo useEffect sự kiện handlerScroll để thay thế vào sự kiện scroll của window -> handlerScroll sẽ set cho backgroundNavbarScroll true hoặc false sẽ ứng với className được gắn vào Navbar)
 const TOP_OFFSET = 20; //* 20 là giá trị animation bắt đầu chuyển động
@@ -53,7 +54,14 @@ const Navbar = () => {
         transition duration-500
         overflow-hidden"
       >
-        <img src="/images/logo.png" alt="logo" className="h-5 md:h-7" />
+        <Image
+          src="/images/logo.png"
+          sizes="100vw"
+          width={0}
+          height={0}
+          alt="logo"
+          className=" w-full h-5 md:h-7"
+        />
       </div>
       <div className="hidden md:flex flex-row justify-left items-center">
         {/* //* nhỏ hơn md screen thì hidden, và screen lớn hơn md thì hiện và sử dụng flex */}
@@ -95,9 +103,12 @@ const Navbar = () => {
                         flex flex-row justify-center items-center"
           onClick={toggleShowAccountMenu}
         >
-          <img
+          <Image
             src="/images/default-blue.png"
             alt="default-blue.png"
+            sizes="100vw"
+            width={0}
+            height={0}
             className="rounded-md w-6 lg:w-8"
           />
           <IoChevronDown

@@ -35,7 +35,7 @@ const RatingMovie: React.FC<RatingMovieProps> = ({ movieId, visible }) => {
 
       mutateRatingScore(); //*: thực hiện auto update lại toàn bộ data trong useRating là ratingModelArray và ratingScore
     }, 200);
-  }, [closeRating]);
+  }, [closeRating, mutateRatingScore]);
 
   //todo: Hàm để post các giá trị lấy được lên api
   const handleRatingMovie = useCallback(async () => {
